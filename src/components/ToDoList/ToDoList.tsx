@@ -1,25 +1,31 @@
-import React, { useState, useRef } from "react";
-import { firebaseSlugBase } from "../utils/firebase";
+import React, { useState, useRef, useEffect } from "react";
+import { firebaseSlugBase } from "../../utils/firebase";
 import { child, set, remove, update } from "@firebase/database";
+import { Props, localParticipantToDo } from "./ToDoList.types";
 
-function ToDoList({ localParticipant, localParticipantToDoList }) {
-  const inputRef = useRef(null);
-  const editInputRef = useRef(null);
+function ToDoList({ localParticipant, localParticipantToDoList }: Props) {
+  useEffect(() => {
+    console.log(localParticipantToDoList);
+  }, [localParticipantToDoList]);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const editInputRef = useRef<HTMLInputElement>(null);
 
-  const [editToDo, setEditToDo] = useState(false);
+  const [editToDo, setEditToDo] = useState({ status: false, id: -1 });
 
   const addToDo = () => {
-    if (inputRef.current.value.trim().length === 0) {
+    if (inputRef.current && inputRef.current.value.trim().length === 0) {
       return;
     }
 
     const newToDo = {
       id: crypto.randomUUID(),
-      content: inputRef.current.value,
+      content: inputRef.current?.value,
       complete: false,
     };
 
-    inputRef.current.value = "";
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
 
     const base = firebaseSlugBase();
 
@@ -28,7 +34,7 @@ function ToDoList({ localParticipant, localParticipantToDoList }) {
     }
   };
 
-  const deleteToDo = (id) => {
+  const deleteToDo = (id: number) => {
     const base = firebaseSlugBase();
 
     remove(child(base, `to_do/${localParticipant.id}/${id}`)).catch((err) => {
@@ -36,26 +42,35 @@ function ToDoList({ localParticipant, localParticipantToDoList }) {
     });
   };
 
-  const editTodo = (id) => {
+  const editTodo = (id: number) => {
     const base = firebaseSlugBase();
 
-    if (editInputRef.current.value.trim().length === 0) {
-      setEditToDo(false);
+    if (
+      editInputRef.current &&
+      editInputRef.current.value.trim().length === 0
+    ) {
+      setEditToDo({ status: false, id: -1 });
       return;
     }
 
     update(child(base, `to_do/${localParticipant.id}/${id}`), {
-      content: editInputRef.current.value,
+      content: editInputRef.current?.value,
     })
       .then(() => {
-        setEditToDo(false);
+        setEditToDo({ status: false, id: -1 });
       })
       .catch((err) => {
         console.error(err);
       });
   };
 
-  const toggleToDoStatus = ({ id, complete }) => {
+  const toggleToDoStatus = ({
+    id,
+    complete,
+  }: {
+    id: number;
+    complete: boolean;
+  }) => {
     const base = firebaseSlugBase();
 
     update(child(base, `to_do/${localParticipant.id}/${id}`), {
@@ -114,8 +129,8 @@ function ToDoList({ localParticipant, localParticipantToDoList }) {
         }}
       >
         {localParticipantToDoList
-          .sort((a, b) => {
-            return a.complete - b.complete;
+          .sort((a: localParticipantToDo, b: localParticipantToDo) => {
+            return Number(a.complete) - Number(b.complete);
           })
           .map((todo) => {
             return (

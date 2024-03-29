@@ -5,7 +5,7 @@ import {
   dailyParticipantInfo,
   makeParticipantUpdateHandler,
 } from "../utils/daily";
-import ToDoList from "./ToDoList";
+import ToDoList from "./ToDoList/ToDoList";
 import { firebaseSlugBase } from "../utils/firebase";
 import { getRoomUrl } from "../utils/room";
 import "./Call.css";
