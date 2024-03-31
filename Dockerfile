@@ -1,15 +1,21 @@
-FROM node:16-alpine
+# Dockerfile
 
-ENV PORT=3000
+# pull official base image
+FROM node:13.12.0-alpine
 
-WORKDIR /bookapp-react-js
-COPY . /bookapp-react-js
-RUN npm run build
-EXPOSE ${PORT}
-CMD ["npm", "start"]
+# set working directory
+WORKDIR /app
 
+# add `/app/node_modules/.bin` to $PATH
+ENV PATH /app/node_modules/.bin:$PATH
 
-FROM nginx:1.22.1-alpine as prod-stage
-COPY --from=build-stage /app/build /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# install app dependencies
+COPY package.json ./
+COPY package-lock.json ./
+RUN npm install
+
+# start app
+CMD ["npm", "run", "start"]
+
+# expose port
+EXPOSE 3000
