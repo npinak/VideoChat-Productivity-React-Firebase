@@ -3,7 +3,7 @@ import { getDatabase, ref } from "firebase/database";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBjcezuoyH5DsraqvaD2S-ZCryMTvivYuY",
+  apiKey: process.env.FIREBASE_KEY,
   authDomain: "react-video-call-145be.firebaseapp.com",
   databaseURL: "https://react-video-call-145be-default-rtdb.firebaseio.com",
   projectId: "react-video-call-145be",
