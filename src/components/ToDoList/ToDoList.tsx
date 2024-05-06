@@ -4,9 +4,7 @@ import { child, set, remove, update } from "@firebase/database";
 import { Props, localParticipantToDo } from "./ToDoList.types";
 
 function ToDoList({ localParticipant, localParticipantToDoList }: Props) {
-  useEffect(() => {
-    console.log(localParticipantToDoList);
-  }, [localParticipantToDoList]);
+
   const inputRef = useRef<HTMLInputElement>(null);
   const editInputRef = useRef<HTMLInputElement>(null);
 
