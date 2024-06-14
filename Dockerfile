@@ -11,11 +11,11 @@ ENV PATH /app/node_modules/.bin:$PATH
 
 # install app dependencies
 COPY package.json ./
-COPY package-lock.json ./
-RUN npm install
+COPY yarn.json ./
+RUN yarn install
 
 # start app
-CMD ["npm", "run", "start"]
+CMD ["yarn", "start"]
 
 # expose port
 EXPOSE 3000
